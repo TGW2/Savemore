@@ -19,6 +19,10 @@ public class Client {
         }
     }
 
+    /**
+     * send info through 'infoGetting' and pass the information to server
+     * @param info
+     */
     public void infoGetting(String info) {
         try{
             pr = new PrintWriter(connection.getOutputStream(),true);
@@ -27,5 +31,16 @@ public class Client {
             System.out.println("IOException");
         }
 
+    }
+
+    /**
+     * 关闭当前线程的输入，关闭建立的连接
+     */
+    public void close(){
+        try{
+            connection.close();
+        }catch(IOException e){
+            System.out.println("IOException");
+        }
     }
 }
