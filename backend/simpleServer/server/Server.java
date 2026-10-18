@@ -21,7 +21,7 @@ public class Server {
                 try{
                     client = server.accept();
                     if(client!=null){
-                        readInfo();
+                        writeInfo();
                     }
                 }catch(IOException e){
                     System.out.println("IOException");
@@ -36,11 +36,11 @@ public class Server {
     }
 
     /**
-     * server store the information client passde by through 'infoGetting' method and store it into
+     * server store the information client passed by through 'infoGetting' method and store it into
      * content.txt file
      * @throws IOException
      */
-    public void readInfo() throws IOException{
+    public void writeInfo() throws IOException{
         br = new BufferedReader(new InputStreamReader(client.getInputStream()));
         try{
             fw = new FileWriter("simpleServer/content.txt",true);
@@ -49,13 +49,14 @@ public class Server {
             while(line!=null){
                 fw.write(line+ System.lineSeparator());
                 fw.flush();
+                System.out.println("info stored");
                 line = br.readLine();
             }
 
         }catch(IOException e){
             e.printStackTrace();
         }
-        System.out.println("info stored");
+
     }
 
 }

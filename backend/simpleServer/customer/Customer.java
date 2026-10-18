@@ -7,14 +7,18 @@ import java.io.IOException;
 public class Customer {
     BufferedReader br;
     String line;
+
+    /**
+     * calling server and request reserved data(content) from server
+     */
     public void getInfo(){
-        try{
-            br = new BufferedReader(new FileReader("simpleServer/content.txt"));
-            while((line = br.readLine()) != null){
-                System.out.println(line+'\n');
-            }
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+//        try{
+//            br = new BufferedReader(new FileReader("simpleServer/content.txt"));
+//            while((line = br.readLine()) != null){
+//                System.out.println(line);
+//            }
+//        }catch(IOException e){
+//            e.printStackTrace();
+//        }
     }
 }
