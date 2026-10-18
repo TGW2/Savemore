@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import com.google.gson.Gson;
 
 public class Server {
@@ -42,6 +41,10 @@ public class Server {
         }
     }
 
+    /**
+     * handle client and customer by separate thread
+     * @param socket (identify socket->client or socket->customer)
+     */
     public void threadhandler(Socket socket){
         Thread work = new Thread(()->{
             try{
