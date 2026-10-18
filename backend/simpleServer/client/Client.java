@@ -13,9 +13,9 @@ public class Client {
         try{
             connection = new Socket("127.0.0.1",9901);
         }catch(UnknownHostException e){
-            System.out.println("unknownhost exception");
+            e.printStackTrace();
         }catch(IOException m){
-            System.out.println("IOexception");
+            m.printStackTrace();
         }
     }
 
