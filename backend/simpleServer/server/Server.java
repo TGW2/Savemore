@@ -2,12 +2,19 @@ package simpleServer.server;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import com.google.gson.Gson;
+
 public class Server {
     ServerSocket server;
-    Socket client;
-    BufferedReader br;
+    Socket socket;
     FileWriter fw;
     String line;
+    List<String> list;
+    String json;
+
     /**
      * start listening port 9901
      */
@@ -19,9 +26,9 @@ public class Server {
             //同时新开一个线程进行accept的等待操作
             Thread work = new Thread(()->{
                 try{
-                    client = server.accept();
-                    if(client!=null){
-                        writeInfo();
+                    while(true){
+                        socket = server.accept();
+                        threadhandler(socket);
                     }
                 }catch(IOException e){
                     System.out.println("IOException");
@@ -35,23 +42,38 @@ public class Server {
         }
     }
 
+    public void threadhandler(Socket socket){
+        Thread work = new Thread(()->{
+            try{
+                BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                while(true){
+                    String response = br.readLine();
+                    if(response == null) {return;}
+                    else if("p".equals(response) && socket!=null){
+                        writeInfo(br.readLine());
+                    }else if("f".equals(response) && socket!=null){
+                        PrintWriter pr = new PrintWriter(socket.getOutputStream(),true);
+                        pr.println(returnInfo());
+                    }
+                }
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        });
+        work.start();
+    }
+
     /**
      * server store the information client passed by through 'infoGetting' method and store it into
      * content.txt file
      * @throws IOException
      */
-    public void writeInfo() throws IOException{
-        br = new BufferedReader(new InputStreamReader(client.getInputStream()));
+    public void writeInfo(String info) throws IOException{
         try{
             fw = new FileWriter("simpleServer/content.txt",true);
-            line = br.readLine();
-            //因为socket全局只有一次调用，所以while的目的是为了可以进行不止一次的write
-            while(line!=null){
-                fw.write(line+ System.lineSeparator());
-                fw.flush();
-                System.out.println("info stored");
-                line = br.readLine();
-            }
+            fw.write(info + System.lineSeparator());
+            fw.flush();
+            System.out.println("info stored");
 
         }catch(IOException e){
             e.printStackTrace();
@@ -59,5 +81,26 @@ public class Server {
 
     }
 
+    /**
+     * first read all content fron storage then written into json
+     * and return back to client let client make connection
+     * and send to customer back
+     * @return
+     */
+    public String returnInfo(){
+        try{
+            BufferedReader br = new BufferedReader(new FileReader("simpleServer/content.txt"));
+            list = new ArrayList<>();
+            while((line = br.readLine())!=null){
+                list.add(line);
+            }
+            json = new Gson().toJson(list);
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return json;
+    }
 }
 

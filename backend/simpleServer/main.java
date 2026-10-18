@@ -21,29 +21,30 @@ public class main {
 
         //start listing port 9901(all the time)
         server.startListeningPort();
+        customer.makePortConnection();
         //always getting connected to server port 9901
         client.makePortConnection();
 
         while(true) {
             Thread.sleep(100);
-//           System.out.println(
-//                   "1: 生产者发送消息到服务端\n"+
-//                   "2: 消费者接受所有的生产者发向服务端的消息\n"+
-//                   "3: break");
-            System.out.println("Operation take(p for publish, f for fetch,, q for quit): ");
-           String choice = sc.next();
-
-//           if(choice.equalsIgnoreCase("p")){
-//               sc.nextLine();
-//               System.out.println("info client send to server:...");
-//               String info = sc.nextLine();
-//               client.infoGetting(info);
-//           }else if(choice.equalsIgnoreCase("f")){
-//               customer.getInfo();
-//           }else if(choice.equalsIgnoreCase("q")){
-//               client.close();
-//               break;
-//           }
+            System.out.println(
+                   "1: 生产者发送消息到服务端\n"+
+                   "2: 消费者接受所有的生产者发向服务端的消息\n"+
+                   "3: break");
+            int choice = sc.nextInt();
+            sc.nextLine();
+            if(choice==1){
+                System.out.println("info publishing: ");
+                String info = sc.nextLine();
+                client.infoGetting("p");
+                client.infoGetting(info);
+            }else if(choice==2){
+                customer.infoGetting("f");
+                customer.infoOutput();
+            }else if(choice==3){
+                client.close();
+                break;
+            }
         }
     }
 }
