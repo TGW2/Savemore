@@ -43,6 +43,8 @@ public class main {
                 customer.infoOutput();
             }else if(choice==3){
                 client.close();
+                customer.close();
+                server.close();
                 break;
             }
         }

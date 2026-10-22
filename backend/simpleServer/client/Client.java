@@ -12,6 +12,7 @@ public class Client {
     public void makePortConnection(){
         try{
             connection = new Socket("127.0.0.1",9901);
+            pr = new PrintWriter(connection.getOutputStream(),true);
         }catch(UnknownHostException e){
             e.printStackTrace();
         }catch(IOException m){
@@ -24,13 +25,7 @@ public class Client {
      * @param info
      */
     public void infoGetting(String info) {
-        try{
-            pr = new PrintWriter(connection.getOutputStream(),true);
             pr.println(info);
-        }catch(IOException e){
-            System.out.println("IOException");
-        }
-
     }
 
     /**

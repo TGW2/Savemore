@@ -105,5 +105,13 @@ public class Server {
         }
         return json;
     }
+
+    public void close(){
+        try{
+            fw.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
 }
 

@@ -13,6 +13,7 @@ public class Customer {
     public void makePortConnection(){
         try{
             connection = new Socket("127.0.0.1",9901);
+            pr = new PrintWriter(connection.getOutputStream(),true);
         }catch(UnknownHostException e){
             e.printStackTrace();
         }catch(IOException m){
@@ -24,12 +25,7 @@ public class Customer {
      * calling server and request reserved data(content) from server
      */
     public void infoGetting(String info){
-        try{
-            pr = new PrintWriter(connection.getOutputStream(),true);
             pr.println(info);
-        }catch(IOException e){
-            System.out.println("IOException");
-        }
     }
 
     /**
@@ -43,6 +39,24 @@ public class Customer {
 
         }catch(IOException e){
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * close connection and pr once terminated
+     */
+    public void close(){
+        if(connection!=null){
+           try{
+               connection.close();
+           }catch(IOException e){
+               e.printStackTrace();
+           }
+        }
+
+        if(pr!=null){
+            pr.close();
+            pr=null;
         }
     }
 }
