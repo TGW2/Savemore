@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 
 public class Server {
     ServerSocket server;
-    Socket socket;
+//    Socket socket;
     FileWriter fw;
     String line;
     List<String> list;
@@ -26,7 +26,7 @@ public class Server {
             Thread work = new Thread(()->{
                 try{
                     while(true){
-                        socket = server.accept();
+                        Socket socket = server.accept();
                         threadhandler(socket);
                     }
                 }catch(IOException e){
@@ -112,7 +112,7 @@ public class Server {
     public void close(){
         try{
             if(fw!=null){fw.close();}
-            if(socket!=null){socket.close();}
+//            if(socket!=null){socket.close();}
             if(server!=null){server.close();}
         }catch(IOException e){
             e.printStackTrace();
