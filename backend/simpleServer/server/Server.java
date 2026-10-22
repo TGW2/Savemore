@@ -109,6 +109,8 @@ public class Server {
     public void close(){
         try{
             fw.close();
+            socket.close();
+            server.close();
         }catch(IOException e){
             e.printStackTrace();
         }
