@@ -26,12 +26,20 @@ public class main {
         client.makePortConnection();
 
         while(true) {
-            Thread.sleep(100);
+//            Thread.sleep(100);
             System.out.println(
                    "1: 生产者发送消息到服务端\n"+
                    "2: 消费者接受所有的生产者发向服务端的消息\n"+
                    "3: break");
-            int choice = sc.nextInt();
+            int choice;
+
+            try{
+                choice = sc.nextInt();
+            }catch(InputMismatchException e){
+                System.out.println("Wrong info, pls try again:");
+                sc.nextLine();
+                continue;
+            }
             sc.nextLine();
             if(choice==1){
                 System.out.println("info publishing: ");

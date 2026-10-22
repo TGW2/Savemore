@@ -25,7 +25,10 @@ public class Client {
      * @param info
      */
     public void infoGetting(String info) {
-            pr.println(info);
+        pr.println(info);
+        if (pr.checkError()) {
+            System.out.println("Message sending failed");
+        }
     }
 
     /**
@@ -35,7 +38,7 @@ public class Client {
         try{
             connection.close();
         }catch(IOException e){
-            System.out.println("IOException");
+            e.printStackTrace();
         }
     }
 }

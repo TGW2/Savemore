@@ -30,7 +30,10 @@ public class Server {
                         threadhandler(socket);
                     }
                 }catch(IOException e){
-                    System.out.println("IOException");
+                    if(!server.isClosed()){
+                        e.printStackTrace();
+                    }
+
                 }
             });
             work.start();
@@ -108,9 +111,9 @@ public class Server {
 
     public void close(){
         try{
-            fw.close();
-            socket.close();
-            server.close();
+            if(fw!=null){fw.close();}
+            if(socket!=null){socket.close();}
+            if(server!=null){server.close();}
         }catch(IOException e){
             e.printStackTrace();
         }

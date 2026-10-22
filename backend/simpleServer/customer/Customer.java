@@ -25,7 +25,10 @@ public class Customer {
      * calling server and request reserved data(content) from server
      */
     public void infoGetting(String info){
-            pr.println(info);
+        pr.println(info);
+        if (pr.checkError()) {
+            System.out.println("Message sending failed");
+        }
     }
 
     /**
