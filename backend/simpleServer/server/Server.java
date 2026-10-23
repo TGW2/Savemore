@@ -13,6 +13,7 @@ public class Server {
     String line;
     List<String> list;
     String json;
+    Object filelock = new Object();
 
     /**
      * start listening port 9901
@@ -76,11 +77,12 @@ public class Server {
      */
     public void writeInfo(String info) throws IOException{
         try{
-            fw = new FileWriter("simpleServer/content.txt",true);
-            fw.write(info + System.lineSeparator());
-            fw.flush();
-            System.out.println("info stored");
-
+            synchronized(filelock){
+                fw = new FileWriter("simpleServer/content.txt",true);
+                fw.write(info + System.lineSeparator());
+                fw.flush();
+                System.out.println("info stored");
+            }
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -95,12 +97,14 @@ public class Server {
      */
     public String returnInfo(){
         try{
-            BufferedReader br = new BufferedReader(new FileReader("simpleServer/content.txt"));
-            list = new ArrayList<>();
-            while((line = br.readLine())!=null){
-                list.add(line);
+            synchronized(filelock){
+                BufferedReader br = new BufferedReader(new FileReader("simpleServer/content.txt"));
+                list = new ArrayList<>();
+                while((line = br.readLine())!=null){
+                    list.add(line);
+                }
+                json = new Gson().toJson(list);
             }
-            json = new Gson().toJson(list);
         }catch(FileNotFoundException e){
             e.printStackTrace();
         }catch (IOException e){

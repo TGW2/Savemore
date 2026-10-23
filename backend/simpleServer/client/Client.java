@@ -21,10 +21,10 @@ public class Client {
     }
 
     /**
-     * send info through 'infoGetting' and pass the information to server
+     * send info through 'infoWriting' and pass the information to server
      * @param info
      */
-    public void infoGetting(String info) {
+    public void infoWriting(String info) {
         pr.println(info);
         if (pr.checkError()) {
             System.out.println("Message sending failed");

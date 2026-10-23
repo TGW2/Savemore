@@ -5,7 +5,6 @@ import simpleServer.customer.Customer;
 import simpleServer.server.Server;
 
 
-import java.io.*;
 import java.util.*;
 
 /**
@@ -44,10 +43,10 @@ public class main {
             if(choice==1){
                 System.out.println("info publishing: ");
                 String info = sc.nextLine();
-                client.infoGetting("p");
-                client.infoGetting(info);
+                client.infoWriting("p");
+                client.infoWriting(info);
             }else if(choice==2){
-                customer.infoGetting("f");
+                customer.infoWriting("f");
                 customer.infoOutput();
             }else if(choice==3){
                 client.close();
