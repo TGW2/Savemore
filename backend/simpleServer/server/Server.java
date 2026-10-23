@@ -78,7 +78,7 @@ public class Server {
     public void writeInfo(String info) throws IOException{
         try{
             synchronized(filelock){
-                fw = new FileWriter("simpleServer/content.txt",true);
+                fw = new FileWriter("simpleServer/content/content.txt",true);
                 fw.write(info + System.lineSeparator());
                 fw.flush();
                 System.out.println("info stored");
@@ -98,7 +98,7 @@ public class Server {
     public String returnInfo(){
         try{
             synchronized(filelock){
-                BufferedReader br = new BufferedReader(new FileReader("simpleServer/content.txt"));
+                BufferedReader br = new BufferedReader(new FileReader("simpleServer/content/content.txt"));
                 list = new ArrayList<>();
                 while((line = br.readLine())!=null){
                     list.add(line);
