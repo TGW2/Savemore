@@ -17,11 +17,13 @@ public class synchronizeTest {
 
         Thread test1 = new Thread(()->{
             client.infoWriting("p");
+            client.infoWriting("topic 1");
             client.infoWriting("info");
         });
 
         Thread test2 = new Thread(()->{
             customer.infoWriting("f");
+            customer.infoWriting("topic 1");
             customer.infoOutput();
         });
 

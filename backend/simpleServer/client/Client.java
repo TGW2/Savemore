@@ -6,6 +6,9 @@ import java.net.*;
 public class Client {
     Socket connection;
     PrintWriter pr;
+    BufferedReader br;
+    String line;
+
     /**
      * telling port 9901 i'm making connection
      */
@@ -37,6 +40,19 @@ public class Client {
     public void close(){
         try{
             connection.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * print the info writing status(stored/invalid)
+     */
+    public void statusCheck(){
+        try{
+            br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            line = br.readLine();
+            System.out.println("Client: "+line);
         }catch(IOException e){
             e.printStackTrace();
         }

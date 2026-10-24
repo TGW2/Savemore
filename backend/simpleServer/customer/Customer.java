@@ -38,9 +38,10 @@ public class Customer {
         try{
             br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             line = br.readLine();
-            System.out.println(line);
+            System.out.println("customer: "+line);
 
         }catch(IOException e){
+            System.out.println("printing error");
             e.printStackTrace();
         }
     }

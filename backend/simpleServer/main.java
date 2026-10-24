@@ -41,12 +41,22 @@ public class main {
             }
             sc.nextLine();
             if(choice==1){
+                System.out.println("topic pubblishing: ");
+                String topic = sc.nextLine();
+
                 System.out.println("info publishing: ");
                 String info = sc.nextLine();
+
                 client.infoWriting("p");
+                client.infoWriting(topic);
                 client.infoWriting(info);
+
+                client.statusCheck();
             }else if(choice==2){
+                System.out.println("topic fetching: ");
+                String topic = sc.nextLine();
                 customer.infoWriting("f");
+                customer.infoWriting(topic);
                 customer.infoOutput();
             }else if(choice==3){
                 client.close();

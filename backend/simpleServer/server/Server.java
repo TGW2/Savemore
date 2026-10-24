@@ -12,7 +12,7 @@ public class Server {
     FileWriter fw;
     String line;
     List<String> list;
-    String json;
+
     Object filelock = new Object();
 
     /**
@@ -57,10 +57,13 @@ public class Server {
                     String response = br.readLine();
                     if(response == null) {return;}
                     else if("p".equals(response) && socket!=null){
-                        writeInfo(br.readLine());
+                        String topic = br.readLine();
+                        String info = br.readLine();
+                        writeInfo(topic,info,socket);
                     }else if("f".equals(response) && socket!=null){
                         PrintWriter pr = new PrintWriter(socket.getOutputStream(),true);
-                        pr.println(returnInfo());
+                        String topic = br.readLine();
+                        pr.println(returnInfo(topic));
                     }
                 }
             }catch(IOException e){
@@ -72,18 +75,30 @@ public class Server {
 
     /**
      * server store the information client passed by through 'infoGetting' method and store it into
-     * content.txt file
+     * topic2.txt file
      * @throws IOException
      */
-    public void writeInfo(String info) throws IOException{
+    public void writeInfo(String topic, String info,Socket socket) throws IOException{
+        PrintWriter pr = new PrintWriter(socket.getOutputStream(),true);
         try{
             synchronized(filelock){
-                fw = new FileWriter("simpleServer/content/content.txt",true);
-                fw.write(info + System.lineSeparator());
-                fw.flush();
-                System.out.println("info stored");
+                if("1".equals(topic) || "topic 1".equalsIgnoreCase(topic)){
+                    fw = new FileWriter("simpleServer/content/topic1.txt",true);
+                    fw.write(info + System.lineSeparator());
+                    fw.flush();
+                    pr.println("info stored");
+                }else if("2".equals(topic) || "topic 2".equalsIgnoreCase(topic)){
+                    fw = new FileWriter("simpleServer/content/topic2.txt",true);
+                    fw.write(info + System.lineSeparator());
+                    fw.flush();
+                    pr.println("info stored");
+                }else{
+                    pr.println("Invalid topic");
+                }
+
             }
         }catch(IOException e){
+            pr.println("storage failed");
             e.printStackTrace();
         }
 
@@ -95,10 +110,19 @@ public class Server {
      * and send to customer back
      * @return
      */
-    public String returnInfo(){
+    public String returnInfo(String topic){
+        String json;
         try{
             synchronized(filelock){
-                BufferedReader br = new BufferedReader(new FileReader("simpleServer/content/content.txt"));
+                BufferedReader br ;
+                if("1".equals(topic) || "topic 1".equalsIgnoreCase(topic)){
+                    br = new BufferedReader(new FileReader("simpleServer/content/topic1.txt"));
+                }else if("2".equals(topic) || "topic 2".equalsIgnoreCase(topic)){
+                    br = new BufferedReader(new FileReader("simpleServer/content/topic2.txt"));
+                }else{
+                    return "Wrong topic";
+                }
+
                 list = new ArrayList<>();
                 while((line = br.readLine())!=null){
                     list.add(line);
@@ -107,8 +131,10 @@ public class Server {
             }
         }catch(FileNotFoundException e){
             e.printStackTrace();
+            return "File not found exception";
         }catch (IOException e){
             e.printStackTrace();
+            return "IOException";
         }
         return json;
     }
