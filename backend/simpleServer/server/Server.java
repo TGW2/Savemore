@@ -133,8 +133,11 @@ public class Server {
      * @return
      */
     public String returnInfo(String topic,long from,long to){
-
+        if (from < 0 || to < from) {
+            return "Invalid offset range";
+        }
         try{
+
             synchronized(filelock){
                 Gson gson = new Gson();
                 BufferedReader br ;
