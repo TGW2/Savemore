@@ -1,5 +1,8 @@
 package simpleServer.customer;
 
+import com.google.gson.Gson;
+import simpleServer.content.Message;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -30,6 +33,13 @@ public class Customer {
             System.out.println("Message sending failed");
         }
     }
+    public void infoWriting(String from, String to){
+        pr.println(from);
+        pr.println(to);
+        if (pr.checkError()) {
+            System.out.println("Message sending failed");
+        }
+    }
 
     /**
      * writing back received info
@@ -38,7 +48,13 @@ public class Customer {
         try{
             br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             line = br.readLine();
-            System.out.println("customer: "+line);
+
+            Gson gson = new Gson();
+            Message[] messages = gson.fromJson(line, Message[].class);
+
+            for (Message msg : messages) {
+                System.out.println(gson.toJson(msg));
+            }
 
         }catch(IOException e){
             System.out.println("printing error");

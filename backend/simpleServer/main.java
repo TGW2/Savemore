@@ -41,7 +41,7 @@ public class main {
             }
             sc.nextLine();
             if(choice==1){
-                System.out.println("topic pubblishing: ");
+                System.out.println("topic publishing: ");
                 String topic = sc.nextLine();
 
                 System.out.println("info publishing: ");
@@ -55,8 +55,12 @@ public class main {
             }else if(choice==2){
                 System.out.println("topic fetching: ");
                 String topic = sc.nextLine();
+                System.out.println("Offset range:");
+                String from = sc.nextLine();
+                String to = sc.nextLine();
                 customer.infoWriting("f");
                 customer.infoWriting(topic);
+                customer.infoWriting(from,to);
                 customer.infoOutput();
             }else if(choice==3){
                 client.close();
