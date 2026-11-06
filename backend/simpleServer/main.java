@@ -16,6 +16,7 @@ public class main {
         Client client = new Client();
         Customer customer = new Customer();
 
+
         Scanner sc = new Scanner(System.in);
 
         //start listing port 9901(all the time)
@@ -25,7 +26,6 @@ public class main {
         client.makePortConnection();
 
         while(true) {
-//            Thread.sleep(100);
             System.out.println(
                    "1: 生产者发送消息到服务端\n"+
                    "2: 消费者接受所有的生产者发向服务端的消息\n"+
@@ -41,7 +41,7 @@ public class main {
             }
             sc.nextLine();
             if(choice==1){
-                System.out.println("topic pubblishing: ");
+                System.out.println("topic publishing: ");
                 String topic = sc.nextLine();
 
                 System.out.println("info publishing: ");
@@ -53,10 +53,21 @@ public class main {
 
                 client.statusCheck();
             }else if(choice==2){
+                System.out.println("GroupId: ");
+                String groupId = sc.nextLine();
+                System.out.println("ConsumerId: ");
+                String consumerId = sc.nextLine();
                 System.out.println("topic fetching: ");
                 String topic = sc.nextLine();
+//                System.out.println("Offset range:");
+                System.out.println("Reading length:");
+//                String from = sc.nextLine();
+//                String to = sc.nextLine();
+                String length = sc.nextLine();
                 customer.infoWriting("f");
-                customer.infoWriting(topic);
+//                customer.infoWriting(topic);
+                customer.infoWriting(groupId, consumerId, topic, length);
+//                customer.infoWriting(from,to);
                 customer.infoOutput();
             }else if(choice==3){
                 client.close();

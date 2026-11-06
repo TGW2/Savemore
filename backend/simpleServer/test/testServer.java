@@ -28,11 +28,11 @@ public class testServer extends Server {
     }
 
     @Override
-    public String returnInfo(String topic) {
+    public String returnInfo(String topic,long from,long to) {
         synchronized (testLock) {
             System.out.println("SERVER: start reading");
 
-            String result = super.returnInfo(topic);
+            String result = super.returnInfo(topic,0,1);
 
             System.out.println("SERVER: end reading");
             return result;
