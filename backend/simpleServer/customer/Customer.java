@@ -13,10 +13,18 @@ public class Customer {
     Socket connection;
     PrintWriter pr;
 
+    String groupId;
+    String consumerId;
+//    public Customer(String groupId, String consumerId){
+//        this.groupId = groupId;
+//        this.consumerId = consumerId;
+//    }
+
     public void makePortConnection(){
         try{
             connection = new Socket("127.0.0.1",9901);
             pr = new PrintWriter(connection.getOutputStream(),true);
+            br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         }catch(UnknownHostException e){
             e.printStackTrace();
         }catch(IOException m){
@@ -40,15 +48,31 @@ public class Customer {
             System.out.println("Message sending failed");
         }
     }
+    public void infoWriting(String groupId, String consumerId, String topic, String length){
+        pr.println(groupId);
+        pr.println(consumerId);
+        pr.println(topic);
+        pr.println(length);
+        if (pr.checkError()) {
+            System.out.println("Message sending failed");
+        }
+    }
 
     /**
      * writing back received info
      */
     public void infoOutput(){
         try{
-            br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             line = br.readLine();
+            if (line == null) {
+                System.out.println("服务器已断开连接");
+                return;
+            }
 
+            if ("Consumer already active".equals(line)) {
+                System.out.println("这个组的该 Topic 已有活跃消费者");
+                return;
+            }
             Gson gson = new Gson();
             Message[] messages = gson.fromJson(line, Message[].class);
 

@@ -14,9 +14,11 @@ public class Server {
     ServerSocket server;
     String line;
     //<topic,offsets>
-    private final Map<String,Long> getOffsets = new HashMap<>();
-    Object filelock = new Object();
 
+    Object filelock = new Object();
+    private final Map<String,Long> nextOffsets = new HashMap<>();
+    private final Map<String, Map<String, Long>> committedOffsets = new HashMap<>();
+    private final Map<String, Map<String, String>> activeConsumers = new HashMap<>();
     /**
      * start listening port 9901
      */
@@ -64,13 +66,17 @@ public class Server {
                         writeInfo(topic,info,socket);
                     }else if("f".equals(response) && socket!=null){
                         PrintWriter pr = new PrintWriter(socket.getOutputStream(),true);
+                        String groupId = br.readLine();
+                        String consumerId = br.readLine();
                         String topic = br.readLine();
-                        String fromInput = br.readLine();
-                        String toInput = br.readLine();
+                        String count = br.readLine();
+                        long count_l = Long.parseLong(count);
+//                        String fromInput = br.readLine();
+//                        String toInput = br.readLine();
 
-                        long from_l = parseOffsetInput(fromInput,0l);
-                        long to_l = parseOffsetInput(toInput, Long.MAX_VALUE);
-                        pr.println(returnInfo(topic,from_l,to_l));
+//                        long from_l = parseOffsetInput(fromInput,0l);
+//                        long to_l = parseOffsetInput(toInput, Long.MAX_VALUE);
+                        pr.println(returnInfo(groupId, consumerId, topic, count_l));
                     }
                 }
             }catch(IOException e){
@@ -112,15 +118,15 @@ public class Server {
     private void writeInfoByHashMap(String info,String topic,String fileAddress) throws IOException{
         synchronized(filelock){
             try(FileWriter fw = new FileWriter(fileAddress,true)){
-                long offset = getOffsets.getOrDefault(topic,0L);
+                long offset = nextOffsets.getOrDefault(topic,0L);
                 Message msg = new Message(offset,topic,info);
                 Gson gson = new Gson();
                 String json = gson.toJson(msg);
                 fw.write(json+System.lineSeparator());
             }
 
-            long nextOffset = getOffsets.getOrDefault(topic,0L);
-            getOffsets.put(topic,nextOffset+1);
+            long nextOffset = nextOffsets.getOrDefault(topic,0L);
+            nextOffsets.put(topic,nextOffset+1);
 
         }
 
@@ -170,7 +176,40 @@ public class Server {
             return "IOException";
         }
     }
+    public String returnInfo(String groupId, String consumerId, String topic,long count){
+        if (count <= 0) {
+            return "Invalid count";
+        }
+            synchronized(filelock){
+                Gson gson = new Gson();
+                BufferedReader br ;
+                if("1".equals(topic) || "topic 1".equalsIgnoreCase(topic)){
+                    topic = "topic 1";
+                }else if("2".equals(topic) || "topic 2".equalsIgnoreCase(topic)){
+                    topic = "topic 2";
+                }else{
+                    return "Wrong topic";
+                }
+                Map<String, String> groupConsumers =
+                        activeConsumers.computeIfAbsent(
+                                groupId, k -> new HashMap<>()
+                        );
 
+                String currentConsumer = groupConsumers.get(topic);
+
+                if (currentConsumer == null) {
+                    groupConsumers.put(topic, consumerId);
+                } else if (!currentConsumer.equals(consumerId)) {
+                    return "Consumer already active";
+                }
+                Map<String,Long> groupOffsets =  committedOffsets.computeIfAbsent(groupId,k->new HashMap());
+                Long from = groupOffsets.getOrDefault(topic, 0L);
+                Long to = count - 1 > Long.MAX_VALUE - from
+                        ? Long.MAX_VALUE
+                        : from + count - 1;
+                return returnInfo(topic,from,to);
+            }
+    }
     /**
      * identify the range customer want by given value
      * @param input
